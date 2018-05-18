@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +22,15 @@ public class HighscoreActivity extends AppCompatActivity implements HighscoresHe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscore);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user == null) {
+            Intent intent = new Intent(HighscoreActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         HighscoresHelper highscoreshelper = new HighscoresHelper();
         highscoreshelper.getHighscores(HighscoreActivity.this);

@@ -26,6 +26,8 @@ public class HighscoresAdapter extends ArrayAdapter<Highscore>{
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.highscore_display, parent, false);
         }
+
+        // set text
         TextView nameView = convertView.findViewById(R.id.name);
         TextView scoreView = convertView.findViewById(R.id.score);
 
