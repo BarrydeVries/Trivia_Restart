@@ -1,11 +1,13 @@
 package com.example.barry.trivia_restart;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,10 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
-    String email;
-    String password;
     FirebaseUser user;
-
 
 
     @Override
@@ -28,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        onStart();
     }
 
     @Override
@@ -35,15 +35,39 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         user = mAuth.getCurrentUser();
-        Intent intent = new Intent(LoginActivity.this, GameActivity.class);
-        startActivity(intent);
+        if (user != null) {
+            Intent intent = new Intent(LoginActivity.this, GameActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void createClicked (View v) {
-        createUser(email, password);
+        // get email and password
+        EditText emailView = (EditText)findViewById(R.id.email);
+        EditText passwordView = (EditText)findViewById(R.id.password);
+        String email = emailView.getText().toString();
+        String password = passwordView.getText().toString();
+
+        if(!password.equals("") && !(password.length() < 8)){
+            createUser(email, password);
+        }
+        else {
+            Context context = getApplicationContext();
+            String text = "Put in an email address and a password of length 8 or longer";
+            int duration = Toast.LENGTH_LONG;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
     }
 
     public void loginClicked (View v) {
+        // get email and password
+        EditText emailView = (EditText)findViewById(R.id.email);
+        EditText passwordView = (EditText)findViewById(R.id.password);
+
+        String email = emailView.getText().toString();
+        String password = passwordView.getText().toString();
         signIn(email, password);
     }
 
@@ -56,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("user created", "createUserWithEmail:success");
                         user = mAuth.getCurrentUser();
+                        // redirect to game
                         Intent intent = new Intent(LoginActivity.this, GameActivity.class);
                         startActivity(intent);
                     } else {
@@ -78,6 +103,8 @@ public class LoginActivity extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d("signed in", "signInWithEmail:success");
                         user = mAuth.getCurrentUser();
+
+                        // redirect to game
                         Intent intent = new Intent(LoginActivity.this, GameActivity.class);
                         startActivity(intent);
                     } else {
